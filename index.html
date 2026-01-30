@@ -3,373 +3,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RAC - Report Editoriale</title>
+    <title>RAC - Editoriale Teatrale</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* ================= PALETTE RAC ================= */
+        /* ================= PALETTE TEATRALE ================= */
         :root {
-            /* Palette Ufficiale */
-            --c-pink:       #B47389; /* Rosa Antico */
-            --c-gold:       #CBBF95; /* Oro Sabbia */
-            --c-steel:      #829EB4; /* Blu Acciaio */
-            --c-mint:       #98CEC0; /* Verde Menta */
-            --c-blue-dark:  #3B5166; /* Blu Scuro (Brand) */
-            --c-grey:       #A6A6A6; /* Grigio */
+            --c-burgundy:   #6a0f0f; /* Rosso sipario profondo */
+            --c-gold:       #c69d22; /* Oro ricco */
+            --c-ink:        #231f20; /* Nero inchiostro */
+            --c-paper:      #f8f7f2; /* Carta avorio */
             
-            /* Colori Funzionali */
-            --bg-body:      #ffffff;
-            --text-main:    #3B5166; /* Usiamo il Blu Scuro come "Nero" */
-            --text-light:   #A6A6A6;
-            
-            --font-head:    'PorticoRegular', 'Arial Black', sans-serif;
+            --font-head:    'Playfair Display', serif; /* Font elegante per titoli */
             --font-body:    'Roboto', sans-serif;
-            --font-serif:   'Playfair Display', serif;
             
-            --reading-width: 700px; 
+            --reading-width: 740px; 
         }
 
-        /* Simulazione Font Portico */
-        @font-face { font-family: 'PorticoRegular'; src: url('assets/fonts/portico/Portico Regular.otf'); }
-
-        /* ================= RESET & BASE ================= */
+        /* ================= BASE & ATMOSFERA ================= */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             font-family: var(--font-body);
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.8;
+            background-color: var(--c-paper);
+            color: var(--c-ink);
+            line-height: 1.9;
             font-size: 18px;
-            -webkit-font-smoothing: antialiased;
+            /* Vignettatura teatrale: i bordi sono leggermente più scuri per focus centrale */
+            background-image: radial-gradient(circle at center, var(--c-paper) 60%, #e8e6db 100%);
+            min-height: 100vh;
         }
 
-        /* ================= HEADER (Light) ================= */
-        .site-header {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 70px;
-            background: rgba(255, 255, 255, 0.95); /* Bianco quasi solido */
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            z-index: 1000;
+        /* ================= HEADER "SIPARIO" ================= */
+        .stage-header {
+            background-color: var(--c-burgundy);
+            border-bottom: 4px solid var(--c-gold);
+            padding: 15px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .header-logo img { height: 40px; width: auto; display: block; }
-        
-        /* Burger Menu Scuro per contrasto su bianco */
-        .burger-menu { width: 30px; cursor: pointer; }
-        .burger-menu span { display: block; height: 3px; width: 100%; background: var(--c-blue-dark); margin-bottom: 5px; border-radius: 2px; }
-
-        /* ================= CONTAINER LETTURA ================= */
-        .reading-container {
-            max-width: var(--reading-width);
-            margin: 0 auto;
-            padding: 120px 24px 80px 24px;
-        }
-
-        /* ================= TIPOGRAFIA ================= */
-        h1.article-title {
+        .header-logo-placeholder {
+            /* Uso un testo styled per ora, sostituisci con <img> se vuoi */
             font-family: var(--font-head);
-            color: var(--c-blue-dark);
-            font-size: 2.5rem;
-            line-height: 1.1;
-            margin-bottom: 15px;
-            letter-spacing: -0.5px;
+            color: var(--c-gold);
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        /* Meta Dati (Ora leggibili!) */
-        .article-meta {
-            font-size: 0.95rem;
-            color: var(--c-grey); /* Grigio su bianco = Perfetto */
-            font-weight: 500;
-            margin-bottom: 40px;
+        /* Finto Top Menu */
+        .fake-menu {
+            list-style: none;
             display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 20px;
+            gap: 30px;
         }
-        
-        /* Tag colorato */
-        .meta-tag {
-            color: var(--c-pink);
-            font-weight: 700;
+        .fake-menu li a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            font-size: 0.8rem;
             letter-spacing: 1px;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .fake-menu li a:hover,
+        .fake-menu li a.active {
+            color: var(--c-gold);
+        }
+        /* Sottolineatura dorata all'hover */
+        .fake-menu li a::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: var(--c-gold); transition: width 0.3s;
+        }
+        .fake-menu li a:hover::after { width: 100%; }
+
+
+        /* ================= CONTENITORE DI LETTURA ================= */
+        .dramatic-reading {
+            max-width: var(--reading-width);
+            margin: 60px auto 100px; /* Centrato su desktop */
+            padding: 0 30px;
+            background: #fff; /* Foglio bianco su sfondo avorio */
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.1); /* Ombra per staccarlo dal fondo */
+            padding: 60px; /* Spazio interno stile libro */
+            border-top: 1px solid #eee;
+        }
+
+        /* ================= TIPOGRAFIA DRAMMATICA ================= */
+        h1.main-title {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            color: var(--c-burgundy);
+            text-align: center;
+            margin-bottom: 40px;
+            /* Linee decorative laterali */
+            display: flex; align-items: center;
+        }
+        h1.main-title::before, h1.main-title::after {
+            content: ''; flex: 1; height: 2px; background: var(--c-gold); margin: 0 20px; opacity: 0.6;
         }
 
         h2 {
             font-family: var(--font-head);
-            color: var(--c-blue-dark);
-            font-size: 1.7rem;
-            margin-top: 60px;
+            color: var(--c-burgundy);
+            font-size: 1.8rem;
+            margin-top: 50px;
             margin-bottom: 25px;
-            /* Linea decorativa laterale Oro */
             border-left: 5px solid var(--c-gold);
-            padding-left: 20px;
+            padding-left: 15px;
         }
 
-        p {
-            margin-bottom: 28px;
-            color: var(--text-main);
-        }
+        p { margin-bottom: 25px; }
 
-        /* Dropcap (Iniziale) Rosa */
-        .intro-text::first-letter {
+        /* Capolettera Teatrale */
+        .dropcap::first-letter {
             float: left;
-            font-size: 4rem;
-            line-height: 0.8;
-            font-weight: 700;
-            padding-right: 15px;
-            padding-top: 5px;
-            color: var(--c-pink); /* Colore Accento */
             font-family: var(--font-head);
+            font-size: 4.5rem;
+            line-height: 0.85;
+            color: var(--c-burgundy);
+            padding-right: 10px;
+            padding-top: 4px;
+            /* Ombra dorata dietro la lettera */
+            text-shadow: 3px 3px 0px rgba(198, 157, 34, 0.3);
         }
 
-        /* ================= CITAZIONE (Highlight) ================= */
-        .highlight-box {
-            background-color: #f9f9f9; /* Grigio chiarissimo */
-            border-top: 2px solid var(--c-gold);
-            border-bottom: 2px solid var(--c-gold);
+        /* Citazione in evidenza */
+        .spotlight-quote {
+            position: relative;
+            margin: 40px -40px; /* Esce leggermente dai bordi del testo */
             padding: 30px;
-            margin: 40px 0;
+            background: #fff;
+            border-top: 3px double var(--c-gold);
+            border-bottom: 3px double var(--c-gold);
             text-align: center;
         }
-        
-        .highlight-box p {
-            font-family: var(--font-serif);
-            font-size: 1.4rem;
-            color: var(--c-blue-dark);
+        /* Icona virgolette gigante */
+        .spotlight-quote::before {
+            content: '\201C'; font-family: var(--font-head); position: absolute; top: -20px; left: 20px; font-size: 80px; color: var(--c-gold); opacity: 0.2;
+        }
+        .spotlight-quote p {
+            font-family: var(--font-head);
             font-style: italic;
-            margin-bottom: 0;
-            line-height: 1.4;
+            font-size: 1.4rem;
+            color: var(--c-burgundy);
+            margin: 0;
         }
 
-        /* ================= IMMAGINI ================= */
-        figure { margin: 40px 0; width: 100%; }
 
-        .inline-image {
-            width: 100%;
-            height: auto;
-            border-radius: 4px; /* Angoli meno arrotondati, più seri */
-            /* Ombra colorata leggera */
-            box-shadow: 0 15px 30px -10px rgba(59, 81, 102, 0.2); 
+        /* ================= LE CORNICI SPESSE (La parte creativa) ================= */
+        figure.theatrical-figure {
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        /* La struttura della cornice */
+        .frame-container {
+            display: inline-block; /* La cornice si adatta al contenuto */
+            position: relative;
+            padding: 10px; /* Spazio bianco tra immagine e cornice interna */
+            background: #fff;
+            
+            /* Primo livello cornice: Oro */
+            border: 6px solid var(--c-gold);
+            
+            /* Secondo livello cornice: Bordeaux (usando outline) */
+            outline: 10px solid var(--c-burgundy);
+            outline-offset: 0px;
+            
+            /* Ombra profonda per effetto 3D "appeso al muro" */
+            box-shadow: 0 20px 50px -10px rgba(106, 15, 15, 0.4);
+            
+            transition: all 0.4s ease;
+        }
+
+        .frame-container:hover {
+            /* Effetto "sollevamento" al passaggio del mouse */
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 30px 60px -15px rgba(106, 15, 15, 0.5);
+        }
+
+        /* L'immagine dentro la cornice */
+        .framed-image {
             display: block;
+            max-width: 100%;
+            height: auto;
+            /* Un piccolo bordo interno per definire l'immagine */
+            border: 1px solid #eee;
         }
 
         figcaption {
-            font-size: 0.85rem;
-            color: var(--c-grey);
-            margin-top: 12px;
-            text-align: left;
-            font-family: var(--font-body);
-            border-left: 1px solid var(--c-gold);
-            padding-left: 10px;
+            margin-top: 25px; /* Spazio per l'outline spesso */
+            font-family: var(--font-head);
+            color: var(--c-burgundy);
+            font-style: italic;
+            font-size: 0.9rem;
         }
-
-        /* ================= CHART BOX ================= */
-        .chart-wrapper {
-            background: #ffffff;
-            border: 1px solid #eeeeee;
-            border-radius: 12px;
-            padding: 30px;
-            margin: 50px 0;
-            /* Ombra elegante */
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
-        }
-        
-        .chart-header { text-align: center; margin-bottom: 25px; }
-        .chart-header h3 { 
-            font-family: var(--font-head); 
-            color: var(--c-blue-dark); 
-            font-size: 1.3rem; 
-        }
-        .chart-header span { 
-            font-size: 0.9rem; 
-            color: var(--c-grey); 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* ================= FOOTER ================= */
-        .site-footer {
-            background-color: var(--c-blue-dark); /* Footer scuro per chiudere la pagina */
-            color: #ffffff;
-            padding: 60px 20px;
-            text-align: center;
-            margin-top: 100px;
-        }
-        .footer-logo-img { 
-            width: 90px; 
-            margin-bottom: 20px; 
-            border-radius: 4px;
-        }
-        .footer-links {
-            list-style: none; padding: 0; display: flex; justify-content: center; gap: 25px; margin-bottom: 30px;
-        }
-        .footer-links a { 
-            color: var(--c-mint); /* Verde Menta sui link footer */
-            text-decoration: none; font-size: 0.9rem; 
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-        .copyright { font-size: 0.8rem; color: var(--c-steel); }
 
     </style>
 </head>
 <body>
 
-    <header class="site-header">
-        <div class="header-logo">
-            <img src="http://registaconfronto.it/wp-content/uploads/2026/01/logo_rac.jpg" alt="RAC Logo">
+    <header class="stage-header">
+        <div class="header-logo-placeholder">
+            Registi a Confronto
         </div>
-        <div class="burger-menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
+        <ul class="fake-menu">
+            <li><a href="#" class="active">L'Inchiesta</a></li>
+            <li><a href="#">I Dati</a></li>
+            <li><a href="#">Il Manifesto</a></li>
+            <li><a href="#">Chi Siamo</a></li>
+            <li><a href="#"><i class="fas fa-search"></i></a></li>
+        </ul>
     </header>
 
-    <main class="reading-container">
-        
-        <article>
-            <h1 class="article-title">Anatomia di un mestiere: il teatro domani</h1>
-            
-            <div class="article-meta">
-                <span class="meta-tag">Analisi Dati</span>
-                <span>•</span>
-                <span>Tempo di lettura: 3 min</span>
-                <span>•</span>
-                <span>RAC Report</span>
-            </div>
+    <main class="dramatic-reading">
 
-            <figure>
-                <img src="http://registaconfronto.it/wp-content/uploads/2021/04/i-fantasmi-del-ccnl-3.png" alt="Teatro Vuoto" class="inline-image">
-                <figcaption>Fig. 1 - Il palcoscenico vuoto: simbolo della ripartenza.</figcaption>
-            </figure>
+        <h1 class="main-title">Anatomia di un mestiere</h1>
 
-            <p class="intro-text">
-                Esiste un grande fraintendimento intorno alla professione del regista: si crede che il suo lavoro inizi solo in sala prove, esplicandosi nella direzione degli attori, nella scelta di un buon piano luci, nella conduzione delle maestranze.
-            </p>
+        <p class="dropcap">
+            Esiste un grande fraintendimento intorno alla professione del regista: si crede che il suo lavoro inizi solo in sala prove, esplicandosi nella direzione degli attori, nella scelta di un buon piano luci, nella conduzione delle maestranze. Questa visione romantica, tuttavia, si scontra duramente con la realtà dei fatti e dei dati.
+        </p>
 
-            <p>
-                A partire da questo malinteso si è avviata da molto tempo nel teatro italiano una pratica di vera e propria speculazione sul lavoro non retribuito. Una zona grigia dove la passione viene spesso confusa con la disponibilità a lavorare gratuitamente.
-            </p>
+        <p>
+            A partire da questo malinteso si è avviata da molto tempo nel teatro italiano una pratica di vera e propria speculazione sul lavoro non retribuito. Una zona grigia dove la passione viene spesso confusa con la disponibilità a lavorare gratuitamente.
+        </p>
 
-            <div class="highlight-box">
-                <p>"Entrare nel merito della pre-produzione significa, per chi fa regia, entrare nel campo dell’inesplorato contrattuale."</p>
-            </div>
-
-            <h2>Il nodo della pre-produzione</h2>
-            
-            <p>
-                Parliamo di quel momento cruciale in cui si verifica la fattibilità del progetto artistico, si contattano i collaboratori, si scrivono i progetti. A fronte di questo impegno, i dati raccolti sono allarmanti.
-            </p>
-
-            <figure>
-                <img src="http://registaconfronto.it/wp-content/uploads/2021/04/i-fantasmi-del-ccnl-2.png" alt="Scrivania Regista" class="inline-image">
-                <figcaption>Fig. 2 - Il lavoro invisibile della progettazione.</figcaption>
-            </figure>
-
-            <p>
-                Nel <strong>91,7% dei casi analizzati</strong>, la quasi totalità, le giornate di lavoro di pre-produzione riconosciute ai registi dalle produzioni sono zero. Questo dato non è solo una statistica, è il sintomo di un sistema che non riconosce la fase generativa dell'opera.
-            </p>
-
-            <div class="chart-wrapper">
-                <div class="chart-header">
-                    <h3>Disparità Economica</h3>
-                    <span>Analisi Cachet Massimo (Campione RAC)</span>
-                </div>
-                <canvas id="cachetChart"></canvas>
-            </div>
-
-            <h2>Prospettive Future</h2>
-            
-            <p>
-                Nonostante le difficoltà, la comunità dei registi sta trovando nuove forme di aggregazione. L'obiettivo non è solo la rivendicazione sindacale, ma la ricostruzione di un'identità professionale che sia al passo con i tempi e con le produzioni europee.
-            </p>
-
-            <p>
-                Guardare ai dati è il primo passo per smettere di rincorrere i fantasmi del passato e iniziare a costruire le fondamenta solide per il teatro di domani.
-            </p>
-
-        </article>
-    </main>
-
-    <footer class="site-footer">
-        <img src="http://registaconfronto.it/wp-content/uploads/2026/01/logo_rac.jpg" alt="RAC Logo" class="footer-logo-img">
-        <ul class="footer-links">
-            <li><a href="#">Manifesto</a></li>
-            <li><a href="#">Chi Siamo</a></li>
-            <li><a href="#">Contatti</a></li>
-        </ul>
-        <div class="copyright">
-            &copy; 2026 Registi a Confronto. Tutti i diritti riservati.
+        <div class="spotlight-quote">
+            <p>"Entrare nel merito della pre-produzione significa entrare nel campo dell’inesplorato contrattuale."</p>
         </div>
-    </footer>
 
-    <script>
-        const ctx = document.getElementById('cachetChart').getContext('2d');
+        <h2>La macchina teatrale e i suoi ingranaggi</h2>
         
-        // Colori dalla palette CSS (hardcoded per JS)
-        const colorPink = '#B47389';
-        const colorSteel = '#829EB4';
-        const colorBlueDark = '#3B5166';
+        <p>
+            Per comprendere la crisi del ruolo del regista, è necessario osservare il sistema nel suo complesso. Il teatro italiano si regge su un ciclo produttivo che spesso schiaccia le fasi generative a favore di quelle distributive.
+        </p>
 
-        const cachetChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['1k - 2k', '2k - 4k', '4k - 7k', '7k - 10k'],
-                datasets: [
-                    {
-                        label: 'Donne',
-                        data: [2, 4, 2, 1],
-                        backgroundColor: colorPink, // Rosa Antico per il dato femminile
-                        borderRadius: 4,
-                        barPercentage: 0.6
-                    },
-                    {
-                        label: 'Uomini',
-                        data: [0, 2, 5, 5],
-                        backgroundColor: colorSteel, // Blu Acciaio per contrasto
-                        borderRadius: 4,
-                        barPercentage: 0.6
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { 
-                            color: colorBlueDark, 
-                            font: { family: "'Roboto', sans-serif" },
-                            padding: 20
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: '#f0f0f0' }, // Griglia grigio chiarissimo
-                        ticks: { color: '#A6A6A6' }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#3B5166' }
-                    }
-                }
-            }
-        });
-    </script>
+        <figure class="theatrical-figure">
+            <div class="frame-container">
+                <img src="https://registaconfronto.it/wp-content/themes/freyja-child/img/4.png" alt="Ciclo Produzione Distribuzione Esercizio" class="framed-image">
+            </div>
+            <figcaption>Fig. 1 - Il ciclo vizioso del sistema produttivo attuale.</figcaption>
+        </figure>
+
+        <p>
+            Come evidenziato nello schema, il flusso tra Produzione, Distribuzione ed Esercizio è continuo, ma non equilibrato. La fase di ideazione e progettazione (la pre-produzione), fondamentale per la qualità dell'opera, viene spesso compressa o completamente ignorata in questo diagramma di flusso economico.
+        </p>
+
+        <h2>Il nodo della pre-produzione</h2>
+
+        <p>
+            Parliamo di quel momento cruciale in cui si verifica la fattibilità del progetto artistico, si contattano i collaboratori, si scrivono i progetti. A fronte di questo impegno, i dati raccolti dall'inchiesta RAC sono allarmanti.
+        </p>
+
+        <figure class="theatrical-figure">
+            <div class="frame-container">
+                <img src="http://registaconfronto.it/wp-content/uploads/2021/04/i-fantasmi-del-ccnl-3.png" alt="I Fantasmi del CCNL" class="framed-image">
+            </div>
+            <figcaption>Fig. 2 - La solitudine del regista nella fase progettuale.</figcaption>
+        </figure>
+
+        <p>
+            Nel <strong>91,7% dei casi analizzati</strong>, le giornate di lavoro di pre-produzione riconosciute ai registi dalle produzioni sono zero. Questo dato non è solo una statistica, è il sintomo di un sistema che non riconosce il valore economico della fase generativa dell'opera.
+        </p>
+
+    </main>
 
 </body>
 </html>
