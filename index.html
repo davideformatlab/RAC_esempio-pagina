@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Data Viz - RAC</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ================= GLOBAL VARIABLES & RESET ================= */
+        :root {
+            --color-gold:       #c69d22;
+            --color-blue-dark:  #3b5166;
+            --color-blue-light: #4e708b;
+            --color-peach:      #eea186;
+            --color-white:      #ffffff;
+            --font-heading:     'PorticoRegular', 'Arial Black', sans-serif; /* Fallback Arial Black per demo */
+            --font-body:        'Roboto', sans-serif;
+        }
+
+        /* Finto @font-face per la demo locale, se non carica userà il fallback */
+        @font-face { font-family: 'PorticoRegular'; src: url('assets/fonts/portico/Portico Regular.otf'); }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--color-blue-dark);
+            line-height: 1.6;
+            background-color: #f4f7f9; /* Grigio chiarissimo di sfondo */
+            overflow-x: hidden;
+        }
+
+        /* ================= UTILITIES & ANIMATIONS ================= */
+        /* Classe per l'animazione di entrata dal basso */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUpAnim 0.8s ease-out forwards;
+        }
+        
+        /* Ritardi per l'animazione a cascata */
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        @keyframes fadeUpAnim {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= HERO SECTION (Con Sfumatura e Immagine) ================= */
+        .hero-section {
+            position: relative;
+            /* Sfumatura blu scuro sopra l'immagine per leggibilità */
+            background: linear-gradient(to bottom, rgba(59, 81, 102, 0.9), rgba(78, 112, 139, 0.8)),
+                        url('http://registaconfronto.it/wp-content/uploads/2021/03/manifesto.png');
+            background-size: cover;
+            background-position: center;
+            color: var(--color-white);
+            padding: 80px 20px 60px 20px;
+            text-align: center;
+            border-bottom-left-radius: 30px; /* Tocco moderno */
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 30px -10px rgba(59, 81, 102, 0.5);
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            color: var(--color-gold);
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+        }
+
+        .hero-intro {
+            font-size: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255,255,255,0.1); /* Effetto vetro leggero */
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+
+        /* ================= DATA VIZ SECTION (Il cuore della demo) ================= */
+        .data-section {
+            padding: 60px 20px;
+            /* Sfondo sfumato inverso */
+            background: linear-gradient(135deg, var(--color-blue-light) 0%, var(--color-blue-dark) 100%);
+            color: var(--color-white);
+            margin-top: -30px; /* Sovrapposizione leggera */
+            padding-top: 60px;
+            z-index: -1;
+            position: relative;
+        }
+
+        .data-container {
+            max-width: 500px; /* Stretto su mobile */
+            margin: 0 auto;
+        }
+
+        /* Contenitore del Grafico */
+        .chart-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .chart-canvas-container {
+            position: relative;
+            height: 250px; /* Altezza fissa per il grafico */
+            width: 100%;
+        }
+
+        /* Card Dati (Icone e Numeri) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Due colonne anche su mobile */
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1); /* Effetto vetro */
+            border-radius: 15px;
+            padding: 20px 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(198, 157, 34, 0.3); /* Bordo oro sottile */
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+             transform: translateY(-5px);
+             background: rgba(255, 255, 255, 0.15);
+             border-color: var(--color-gold);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .stat-number {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--color-gold);
+            display: block;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+
+        /* ================= MANIFESTO SECTION (Lista ordinata moderna) ================= */
+        .manifesto-section {
+            padding: 60px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--color-white);
+        }
+
+        .section-heading {
+            font-family: var(--font-heading);
+            color: var(--color-blue-dark);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2rem;
+        }
+
+        /* Stile personalizzato per la lista numerata */
+        ol.manifesto-list {
+            counter-reset: manifesto-counter;
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        ol.manifesto-list li {
+            position: relative;
+            margin-bottom: 25px;
+            padding-left: 50px;
+            font-size: 1rem;
+            color: var(--color-blue-dark);
+        }
+
+        /* Il numero Oro prima di ogni punto */
+        ol.manifesto-list li::before {
+            counter-increment: manifesto-counter;
+            content: counter(manifesto-counter);
+            position: absolute;
+            left: 0;
+            top: -2px;
+            width: 35px;
+            height: 35px;
+            background-color: var(--color-gold);
+            color: var(--color-blue-dark);
+            font-family: var(--font-heading);
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(198, 157, 34, 0.4);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="hero-section fade-up">
+        <h1 class="hero-title">CHI SIAMO</h1>
+        <h2 class="hero-subtitle">Associazione di categoria regist_ teatrali italian_</h2>
+        <div class="hero-intro fade-up delay-1">
+            <p>RAC - regist_ a confronto nasce nel 2019, con l'intento di mettere in comunicazione i registi e le registe italiane, in un'ottica di autoformazione, scambio di pratiche e monitoraggio della situazione lavorativa della categoria.</p>
+        </div>
+    </header>
+
+    <section class="data-section">
+        <div class="data-container">
+            
+            <div class="chart-wrapper fade-up delay-2">
+                <div class="chart-canvas-container">
+                    <canvas id="racChart"></canvas>
+                </div>
+                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">Rapporto Associati vs Censiti</p>
+            </div>
+
+            <div class="stats-grid fade-up delay-3">
+                <div class="stat-card">
+                    <img src="http://registaconfronto.it/wp-content/uploads/2021/03/elenco-associat_.png" alt="Icona Associati" class="stat-icon">
+                    <span class="stat-number">~100</span>
+                    <span class="stat-label">Registi Associati</span>
+                </div>
+                <div class="stat-card">
+                    <img src="http://registaconfronto.it/wp-content/uploads/2021/03/megafono.jpg" alt="Icona Megafono" class="stat-icon" style="border-radius: 50%">
+                    <span class="stat-number">~360</span>
+                    <span class="stat-label">Registi Censiti</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="manifesto-section fade-up delay-3">
+        <h3 class="section-heading">IL MANIFESTO</h3>
+        <ol class="manifesto-list">
+            <li>RAC è un’associazione di categoria. Si occupa di politica culturale, diritti dei lavoratori e poetica della scena. Le tre cose sono per noi inscindibili.</li>
+            <li>RAC nasce per mappare e mettere in rete i registi che lavorano in Italia, con particolare attenzione alle nuove generazioni, per favorire un dialogo intergenerazionale.</li>
+            <li>RAC è apartitica, antifascista, si oppone a ogni discriminazione di genere, abilità, religione, provenienza geografica o sociale. RAC si impegna a rispettare la parità di genere nelle proprie cariche interne e nella sua rappresentanza pubblica.</li>
+            <li>RAC si impegna a creare un dialogo costante con le istituzioni (Ministero, Enti locali, Teatri Nazionali, TRIC, Centri di produzione e circuiti regionali), i direttori artistici e le altre associazioni di categoria per migliorare il sistema teatrale italiano.</li>
+            <li>RAC auspica la creazione di un albo dei registi e di un codice deontologico.</li>
+            <li>RAC vuole essere un osservatorio sulle stagioni e i festival dei teatri finanziati dal FUS.</li>
+        </ol>
+    </section>
+
+
+    <script>
+        // Aspetta che la pagina sia caricata
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // Dati per il grafico
+            const dataValues = [100, 260]; // 100 associati, 260 rimanenti (totale 360)
+            const dataLabels = ['Associati RAC', 'Altri Censiti'];
+            // Colori dalla nostra palette
+            const backgroundColors = ['#c69d22', '#4e708b']; // Oro per Associati, Blu Chiaro per altri
+            const borderColors = ['#ffffff', '#ffffff'];
+
+            // Configurazione del grafico
+            const ctx = document.getElementById('racChart').getContext('2d');
+            const racChart = new Chart(ctx, {
+                type: 'doughnut', // Grafico a ciambella, più moderno
+                data: {
+                    labels: dataLabels,
+                    datasets: [{
+                        label: 'Numero Registi',
+                        data: dataValues,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 2,
+                        hoverOffset: 10 // Effetto hover
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%', // Spessore della ciambella (più alto = più sottile)
+                    animation: {
+                        animateScale: true, // Animazione di crescita
+                        animateRotate: true,
+                        duration: 2000, // Durata 2 secondi
+                        easing: 'easeOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff', // Colore testo legenda
+                                font: {
+                                    family: "'Roboto', sans-serif",
+                                    size: 14
+                                },
+                                padding: 20,
+                                usePointStyle: true // Pallini invece di rettangoli
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(59, 81, 102, 0.9)',
+                            titleFont: { family: var(--font-heading) },
+                            bodyFont: { family: var(--font-body) }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
