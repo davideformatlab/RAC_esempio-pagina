@@ -3,348 +3,513 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Data Viz - RAC</title>
+    <title>RAC - Demo Immersiva Mobile</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:ital,wght@1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        /* ================= GLOBAL VARIABLES & RESET ================= */
+        /* ================= VARIABLES ================= */
         :root {
-            --color-gold:       #c69d22;
-            --color-blue-dark:  #3b5166;
-            --color-blue-light: #4e708b;
-            --color-peach:      #eea186;
-            --color-white:      #ffffff;
-            --font-heading:     'PorticoRegular', 'Arial Black', sans-serif; /* Fallback Arial Black per demo */
-            --font-body:        'Roboto', sans-serif;
+            --c-gold:       #c69d22;
+            --c-blue-dark:  #3b5166;
+            --c-blue-light: #4e708b;
+            --c-peach:      #eea186;
+            --c-white:      #ffffff;
+            --c-bg-light:   #f8f9fa;
+            
+            --font-head:    'PorticoRegular', 'Arial Black', sans-serif;
+            --font-body:    'Roboto', sans-serif;
+            
+            --header-height: 70px;
         }
 
-        /* Finto @font-face per la demo locale, se non carica userà il fallback */
+        /* Simulazione Font Portico */
         @font-face { font-family: 'PorticoRegular'; src: url('assets/fonts/portico/Portico Regular.otf'); }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* ================= RESET & BASE ================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
             font-family: var(--font-body);
-            color: var(--color-blue-dark);
+            background-color: var(--c-blue-dark);
+            color: var(--c-blue-dark);
             line-height: 1.6;
-            background-color: #f4f7f9; /* Grigio chiarissimo di sfondo */
             overflow-x: hidden;
+            padding-top: 0; /* Hero gestisce lo spazio */
         }
 
-        /* ================= UTILITIES & ANIMATIONS ================= */
-        /* Classe per l'animazione di entrata dal basso */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(30px);
-            animation: fadeUpAnim 0.8s ease-out forwards;
-        }
-        
-        /* Ritardi per l'animazione a cascata */
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-
-        @keyframes fadeUpAnim {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* ================= HEADER (NUOVO) ================= */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background: rgba(59, 81, 102, 0.95); /* Blu scuro quasi solido */
+            backdrop-filter: blur(10px); /* Effetto vetro sfocato */
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
         }
 
-        /* ================= HERO SECTION (Con Sfumatura e Immagine) ================= */
-        .hero-section {
+        .header-logo img {
+            height: 40px; /* Altezza controllata logo */
+            width: auto;
+            display: block;
+        }
+
+        .burger-menu {
+            width: 30px;
+            height: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .burger-menu span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--c-gold); /* Linee oro */
+            border-radius: 2px;
+        }
+
+        /* ================= HERO IMMERSIVA ================= */
+        .hero {
+            height: 90vh; /* Un po' più alta per compensare header */
             position: relative;
-            /* Sfumatura blu scuro sopra l'immagine per leggibilità */
-            background: linear-gradient(to bottom, rgba(59, 81, 102, 0.9), rgba(78, 112, 139, 0.8)),
-                        url('http://registaconfronto.it/wp-content/uploads/2021/03/manifesto.png');
+            background-image: url('http://registaconfronto.it/wp-content/uploads/2021/04/i-fantasmi-del-ccnl-3.png');
             background-size: cover;
             background-position: center;
-            color: var(--color-white);
-            padding: 80px 20px 60px 20px;
-            text-align: center;
-            border-bottom-left-radius: 30px; /* Tocco moderno */
-            border-bottom-right-radius: 30px;
-            box-shadow: 0 10px 30px -10px rgba(59, 81, 102, 0.5);
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 60px;
+            margin-top: 0; 
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* Gradiente per sfumare l'immagine sotto l'header */
+            background: linear-gradient(to bottom, rgba(59,81,102,0.6) 0%, rgba(59,81,102,0.2) 20%, rgba(59,81,102,1) 100%);
         }
 
-        .hero-title {
-            font-family: var(--font-heading);
-            color: var(--color-gold);
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-
-        .hero-subtitle {
-            font-size: 1.1rem;
-            font-weight: 300;
-            max-width: 600px;
-            margin: 0 auto 30px auto;
-        }
-
-        .hero-intro {
-            font-size: 1rem;
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 20px;
-            background: rgba(255,255,255,0.1); /* Effetto vetro leggero */
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-
-        /* ================= DATA VIZ SECTION (Il cuore della demo) ================= */
-        .data-section {
-            padding: 60px 20px;
-            /* Sfondo sfumato inverso */
-            background: linear-gradient(135deg, var(--color-blue-light) 0%, var(--color-blue-dark) 100%);
-            color: var(--color-white);
-            margin-top: -30px; /* Sovrapposizione leggera */
-            padding-top: 60px;
-            z-index: -1;
+        .hero-content {
             position: relative;
-        }
-
-        .data-container {
-            max-width: 500px; /* Stretto su mobile */
-            margin: 0 auto;
-        }
-
-        /* Contenitore del Grafico */
-        .chart-wrapper {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 40px;
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-        .chart-canvas-container {
-            position: relative;
-            height: 250px; /* Altezza fissa per il grafico */
+            z-index: 2;
+            padding: 30px;
             width: 100%;
         }
 
-        /* Card Dati (Icone e Numeri) */
-        .stats-grid {
+        .hero-title {
+            font-family: var(--font-head);
+            color: var(--c-gold);
+            font-size: 3rem;
+            line-height: 0.9;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            border-left: 3px solid var(--c-peach);
+            padding-left: 15px;
+        }
+
+        /* ================= LONG FORM READING ================= */
+        .content-section {
+            background: var(--c-bg-light);
+            padding: 60px 25px;
+            border-radius: 30px 30px 0 0;
+            margin-top: -30px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .long-text h3 {
+            font-family: var(--font-head);
+            color: var(--c-blue-dark);
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+
+        .long-text p {
+            font-size: 1.15rem;
+            color: #4a5a6a;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        /* Dropcap */
+        .long-text p:first-of-type::first-letter {
+            float: left;
+            font-size: 3.5rem;
+            line-height: 0.8;
+            font-weight: bold;
+            padding-right: 10px;
+            color: var(--c-gold);
+            font-family: var(--font-head);
+        }
+
+        .highlight-box {
+            background: rgba(198, 157, 34, 0.1);
+            border-left: 4px solid var(--c-gold);
+            padding: 20px;
+            margin: 30px 0;
+            font-style: italic;
+            color: var(--c-blue-dark);
+        }
+
+        /* ================= ANIMAZIONI SCROLL ================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ================= PARALLAX TRANSITION ================= */
+        .parallax-break {
+            height: 60vh;
+            background-image: url('http://registaconfronto.it/wp-content/uploads/2021/04/i-fantasmi-del-ccnl-2.png');
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallax-break::before {
+            content: '';
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .break-text {
+            position: relative;
+            color: var(--c-white);
+            font-family: var(--font-head);
+            font-size: 2rem;
+            text-align: center;
+            padding: 20px;
+            border: 2px solid var(--c-white);
+            backdrop-filter: blur(5px);
+        }
+
+        /* ================= DATA VIZ SECTION ================= */
+        .data-viz-section {
+            background: var(--c-blue-dark);
+            color: var(--c-white);
+            padding: 80px 20px;
+            position: relative;
+        }
+
+        .chart-container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .chart-title {
+            text-align: center;
+            font-family: var(--font-head);
+            color: var(--c-peach);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .chart-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 30px;
+            margin-top: -15px;
+        }
+
+        /* ================= VISUAL GRID ================= */
+        .visual-grid {
+            padding: 50px 20px;
+            background: var(--c-bg-light);
             display: grid;
-            grid-template-columns: 1fr 1fr; /* Due colonne anche su mobile */
+            gap: 20px;
+        }
+        
+        .card-image-box {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            aspect-ratio: 1/1;
+        }
+        
+        .card-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .card-image-box:hover img {
+            transform: scale(1.1);
+        }
+        
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            font-family: var(--font-head);
+        }
+
+        /* ================= FOOTER (NUOVO) ================= */
+        .site-footer {
+            background-color: #2a3b4c; /* Versione più scura del blu */
+            color: #ffffff;
+            padding: 50px 20px 30px 20px;
+            text-align: center;
+            border-top: 4px solid var(--c-gold);
+        }
+
+        .footer-logo {
+            width: 100px;
+            margin-bottom: 30px;
+            filter: brightness(0) invert(1); /* Rende il logo bianco se necessario, o togliere se il jpg ha sfondo */
+            opacity: 0.8;
+        }
+        /* Fix per il JPG che ha sfondo bianco: gli diamo un bordo arrotondato */
+        .footer-logo-img {
+            width: 80px;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .footer-social {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--c-gold);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: var(--c-gold);
+            color: var(--c-blue-dark);
+            transform: translateY(-3px);
+        }
+
+        .footer-links {
+            list-style: none;
+            margin-bottom: 30px;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 15px;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1); /* Effetto vetro */
-            border-radius: 15px;
-            padding: 20px 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(198, 157, 34, 0.3); /* Bordo oro sottile */
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card:hover {
-             transform: translateY(-5px);
-             background: rgba(255, 255, 255, 0.15);
-             border-color: var(--color-gold);
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-bottom: 10px;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .stat-number {
-            font-family: var(--font-heading);
-            font-size: 2rem;
-            color: var(--color-gold);
-            display: block;
-            line-height: 1;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.8);
+        .footer-links a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+        .footer-links a:hover { color: var(--c-peach); }
 
-
-        /* ================= MANIFESTO SECTION (Lista ordinata moderna) ================= */
-        .manifesto-section {
-            padding: 60px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: var(--color-white);
-        }
-
-        .section-heading {
-            font-family: var(--font-heading);
-            color: var(--color-blue-dark);
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 2rem;
-        }
-
-        /* Stile personalizzato per la lista numerata */
-        ol.manifesto-list {
-            counter-reset: manifesto-counter;
-            list-style: none;
-            padding-left: 10px;
-        }
-
-        ol.manifesto-list li {
-            position: relative;
-            margin-bottom: 25px;
-            padding-left: 50px;
-            font-size: 1rem;
-            color: var(--color-blue-dark);
-        }
-
-        /* Il numero Oro prima di ogni punto */
-        ol.manifesto-list li::before {
-            counter-increment: manifesto-counter;
-            content: counter(manifesto-counter);
-            position: absolute;
-            left: 0;
-            top: -2px;
-            width: 35px;
-            height: 35px;
-            background-color: var(--color-gold);
-            color: var(--color-blue-dark);
-            font-family: var(--font-heading);
-            font-weight: bold;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(198, 157, 34, 0.4);
+        .footer-copyright {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.3);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
         }
 
     </style>
 </head>
 <body>
 
-    <header class="hero-section fade-up">
-        <h1 class="hero-title">CHI SIAMO</h1>
-        <h2 class="hero-subtitle">Associazione di categoria regist_ teatrali italian_</h2>
-        <div class="hero-intro fade-up delay-1">
-            <p>RAC - regist_ a confronto nasce nel 2019, con l'intento di mettere in comunicazione i registi e le registe italiane, in un'ottica di autoformazione, scambio di pratiche e monitoraggio della situazione lavorativa della categoria.</p>
+    <header class="site-header">
+        <div class="header-logo">
+            <img src="http://registaconfronto.it/wp-content/uploads/2026/01/logo_rac.jpg" alt="RAC Logo">
+        </div>
+        <div class="burger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </header>
 
-    <section class="data-section">
-        <div class="data-container">
+    <header class="hero">
+        <div class="hero-content reveal">
+            <h1 class="hero-title">IL TEATRO<br>DI DOMANI</h1>
+            <p class="hero-subtitle">Analisi, dati e prospettive per una nuova regia.</p>
+        </div>
+    </header>
+
+    <section class="content-section">
+        <div class="long-text reveal">
+            <h3>ANATOMIA DI UN MESTIERE</h3>
             
-            <div class="chart-wrapper fade-up delay-2">
-                <div class="chart-canvas-container">
-                    <canvas id="racChart"></canvas>
-                </div>
-                <p style="text-align: center; margin-top: 15px; font-size: 0.9rem; opacity: 0.8;">Rapporto Associati vs Censiti</p>
+            <p>Esiste un grande fraintendimento intorno alla professione del regista: si crede che il suo lavoro inizi solo in sala prove, esplicandosi nella direzione degli attori, nella scelta di un buon piano luci, nella conduzione delle maestranze.</p>
+            
+            <p>A partire da questo malinteso si è avviata da molto tempo nel teatro italiano una pratica di vera e propria speculazione sul lavoro non retribuito. Se, infatti, è comprensibile che la ricerca, lo studio di fonti e modelli, non vengano annoverati nel capitolo di investimento che riguarda la regia, non si può dire lo stesso del lavoro di progettazione.</p>
+
+            <div class="highlight-box">
+                "Entrare nel merito della pre-produzione significa, per chi fa regia, entrare nel campo dell’inesplorato contrattuale."
             </div>
 
-            <div class="stats-grid fade-up delay-3">
-                <div class="stat-card">
-                    <img src="http://registaconfronto.it/wp-content/uploads/2021/03/elenco-associat_.png" alt="Icona Associati" class="stat-icon">
-                    <span class="stat-number">~100</span>
-                    <span class="stat-label">Registi Associati</span>
-                </div>
-                <div class="stat-card">
-                    <img src="http://registaconfronto.it/wp-content/uploads/2021/03/megafono.jpg" alt="Icona Megafono" class="stat-icon" style="border-radius: 50%">
-                    <span class="stat-number">~360</span>
-                    <span class="stat-label">Registi Censiti</span>
-                </div>
-            </div>
-
+            <p>A fronte di questo impegno, nel 91,7% dei casi analizzati, la quasi totalità, le giornate di lavoro di pre-produzione riconosciute ai registi dalle produzioni sono zero. Un dato che ci obbliga a riflettere sulla sostenibilità futura di questa arte.</p>
         </div>
     </section>
 
-    <section class="manifesto-section fade-up delay-3">
-        <h3 class="section-heading">IL MANIFESTO</h3>
-        <ol class="manifesto-list">
-            <li>RAC è un’associazione di categoria. Si occupa di politica culturale, diritti dei lavoratori e poetica della scena. Le tre cose sono per noi inscindibili.</li>
-            <li>RAC nasce per mappare e mettere in rete i registi che lavorano in Italia, con particolare attenzione alle nuove generazioni, per favorire un dialogo intergenerazionale.</li>
-            <li>RAC è apartitica, antifascista, si oppone a ogni discriminazione di genere, abilità, religione, provenienza geografica o sociale. RAC si impegna a rispettare la parità di genere nelle proprie cariche interne e nella sua rappresentanza pubblica.</li>
-            <li>RAC si impegna a creare un dialogo costante con le istituzioni (Ministero, Enti locali, Teatri Nazionali, TRIC, Centri di produzione e circuiti regionali), i direttori artistici e le altre associazioni di categoria per migliorare il sistema teatrale italiano.</li>
-            <li>RAC auspica la creazione di un albo dei registi e di un codice deontologico.</li>
-            <li>RAC vuole essere un osservatorio sulle stagioni e i festival dei teatri finanziati dal FUS.</li>
-        </ol>
+    <div class="parallax-break">
+        <div class="break-text reveal">
+            I FANTASMI<br>DEL CCNL
+        </div>
+    </div>
+
+    <section class="data-viz-section">
+        <div class="chart-container reveal">
+            <h3 class="chart-title">DISPARITÀ DI GENERE</h3>
+            <p class="chart-subtitle">Analisi Cachet Massimo (Campione RAC)</p>
+            
+            <canvas id="cachetChart"></canvas>
+            
+            <p style="text-align: center; margin-top: 20px; font-size: 0.8rem; opacity: 0.6;">
+                Dati estratti dal questionario interno.<br>Asse X: Fasce di cachet (€) | Asse Y: N. Registi
+            </p>
+        </div>
     </section>
 
+    <section class="visual-grid">
+        <div class="card-image-box reveal">
+            <img src="http://registaconfronto.it/wp-content/uploads/2024/01/R.A.C.-post-insta_2-3.png" alt="RAC Social">
+            <div class="card-overlay">LA COMMUNITY</div>
+        </div>
+        <div class="card-image-box reveal">
+            <img src="http://registaconfronto.it/wp-content/uploads/2024/01/R.A.C.-post-insta_2-4.png" alt="RAC Event">
+            <div class="card-overlay">EVENTI LIVE</div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <img src="http://registaconfronto.it/wp-content/uploads/2026/01/logo_rac.jpg" alt="RAC Logo" class="footer-logo-img">
+        
+        <div class="footer-social">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+        </div>
+
+        <ul class="footer-links">
+            <li><a href="#">Chi Siamo</a></li>
+            <li><a href="#">Manifesto</a></li>
+            <li><a href="#">Contatti</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+        </ul>
+
+        <div class="footer-copyright">
+            &copy; 2026 Registi a Confronto. Tutti i diritti riservati.<br>
+            Sito web by YourName
+        </div>
+    </footer>
 
     <script>
-        // Aspetta che la pagina sia caricata
-        document.addEventListener("DOMContentLoaded", function() {
-            
-            // Dati per il grafico
-            const dataValues = [100, 260]; // 100 associati, 260 rimanenti (totale 360)
-            const dataLabels = ['Associati RAC', 'Altri Censiti'];
-            // Colori dalla nostra palette
-            const backgroundColors = ['#c69d22', '#4e708b']; // Oro per Associati, Blu Chiaro per altri
-            const borderColors = ['#ffffff', '#ffffff'];
+        // 1. ANIMAZIONE SCROLL
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100; 
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
 
-            // Configurazione del grafico
-            const ctx = document.getElementById('racChart').getContext('2d');
-            const racChart = new Chart(ctx, {
-                type: 'doughnut', // Grafico a ciambella, più moderno
-                data: {
-                    labels: dataLabels,
-                    datasets: [{
-                        label: 'Numero Registi',
-                        data: dataValues,
-                        backgroundColor: backgroundColors,
-                        borderColor: borderColors,
-                        borderWidth: 2,
-                        hoverOffset: 10 // Effetto hover
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%', // Spessore della ciambella (più alto = più sottile)
-                    animation: {
-                        animateScale: true, // Animazione di crescita
-                        animateRotate: true,
-                        duration: 2000, // Durata 2 secondi
-                        easing: 'easeOutQuart'
+        // 2. CONFIGURAZIONE GRAFICO
+        const ctx = document.getElementById('cachetChart').getContext('2d');
+        const cachetChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['1k - 2k', '2k - 4k', '4k - 7k', '7k - 10k'],
+                datasets: [
+                    {
+                        label: 'Donne',
+                        data: [2, 4, 2, 1],
+                        backgroundColor: '#eea186',
+                        borderRadius: 5,
+                        borderWidth: 0
                     },
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                color: '#ffffff', // Colore testo legenda
-                                font: {
-                                    family: "'Roboto', sans-serif",
-                                    size: 14
-                                },
-                                padding: 20,
-                                usePointStyle: true // Pallini invece di rettangoli
-                            }
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(59, 81, 102, 0.9)',
-                            titleFont: { family: var(--font-heading) },
-                            bodyFont: { family: var(--font-body) }
-                        }
+                    {
+                        label: 'Uomini',
+                        data: [0, 2, 5, 5],
+                        backgroundColor: '#3b5166',
+                        borderRadius: 5,
+                        borderWidth: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#ffffff', font: { family: "'Roboto', sans-serif" } }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(59, 81, 102, 0.9)'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { color: '#ffffff' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#ffffff' }
                     }
                 }
-            });
+            }
         });
     </script>
 
